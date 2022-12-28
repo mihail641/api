@@ -2,15 +2,9 @@ package model
 
 import (
 	"database/sql"
+	"example.com/projectApiClient"
 	"fmt"
 )
-
-// Module структура используется инициализации данные в структуры
-type Module struct {
-	Id     int64   `json:"id"`
-	Title  string  `json:"title"`
-	Errors []Error `json:"errors"`
-}
 
 // ModuleModel используется для конструктора модели
 type ModuleModel struct {
@@ -25,7 +19,7 @@ func NewModuleModel(DB *sql.DB) *ModuleModel {
 }
 
 // GetModuleById метод модели по получению всех пользователей из БД возвращает массив структур Module по id документа и ошибку
-func (m *ModuleModel) GetModuleById(documentId int64) ([]Module, error) {
+func (m *ModuleModel) GetModuleById(documentId int64) ([]projectApiClient.Module, error) {
 	fmt.Println(
 		"m.dataBase",
 		m.dataBase,
@@ -43,10 +37,10 @@ func (m *ModuleModel) GetModuleById(documentId int64) ([]Module, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	module := []Module{}
+	module := []projectApiClient.Module{}
 	//получение данных из всей таблицы
 	for rows.Next() {
-		p := Module{}
+		p := projectApiClient.Module{}
 		err := rows.Scan(
 			&p.Id,
 			&p.Title,

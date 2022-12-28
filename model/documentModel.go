@@ -2,15 +2,9 @@ package model
 
 import (
 	"database/sql"
+	"example.com/projectApiClient"
 	fmt "fmt"
 )
-
-// Document структура используется инициализации данные в структуры
-type Document struct {
-	Id      int64    `json:"id" :"id"`
-	Title   string   `json:"title" :"title"`
-	Modules []Module `json:"modules"`
-}
 
 // DocumentModel используется для конструктора модели
 type DocumentModel struct {
@@ -31,7 +25,7 @@ func NewDocumentModel(DB *sql.DB) *DocumentModel {
 }
 
 // GetDocuments метод модели по получению всех пользователей из БД возвращает массив структур Document и ошибку
-func (m *DocumentModel) GetDocuments() ([]Document, error) {
+func (m *DocumentModel) GetDocuments() ([]projectApiClient.Document, error) {
 	//rows запрос возврата срок выборки из таблицы значений
 	var rows, err = m.dataBase.Query("SELECT id, title FROM documentations.document")
 	if err != nil {
@@ -43,10 +37,10 @@ func (m *DocumentModel) GetDocuments() ([]Document, error) {
 	}
 	defer rows.Close()
 	//document инициализация массива структур Document
-	document := []Document{}
+	document := []projectApiClient.Document{}
 	//получение данных из всей таблицы
 	for rows.Next() {
-		p := Document{}
+		p := projectApiClient.Document{}
 		err := rows.Scan(
 			&p.Id,
 			&p.Title,
@@ -69,7 +63,7 @@ func (m *DocumentModel) GetDocuments() ([]Document, error) {
 }
 
 // GetDocumentsFull получение вложенных типов Module и Error в Documents
-func (m *DocumentModel) GetDocumentsFull() ([]Document, error) {
+func (m *DocumentModel) GetDocumentsFull() ([]projectApiClient.Document, error) {
 	//вызов метода GetDocuments для получения всех документов
 	doc, err := m.GetDocuments()
 	if err != nil {
@@ -77,7 +71,7 @@ func (m *DocumentModel) GetDocumentsFull() ([]Document, error) {
 			"ошибка функции GetDocuments %s",
 			err,
 		)
-		return []Document{}, err
+		return []projectApiClient.Document{}, err
 	}
 	//Цикл range для передобра значений структуры Document
 	for i := range doc {
@@ -90,7 +84,7 @@ func (m *DocumentModel) GetDocumentsFull() ([]Document, error) {
 				"ошибка функции GetModuleById селекта %s",
 				err,
 			)
-			return []Document{}, err
+			return []projectApiClient.Document{}, err
 		}
 		//Цикл range для передобра значений структуры Module
 		for k := range doc[i].Modules {
@@ -103,7 +97,7 @@ func (m *DocumentModel) GetDocumentsFull() ([]Document, error) {
 					"ошибка функции GetErrorById %s",
 					err,
 				)
-				return []Document{}, err
+				return []projectApiClient.Document{}, err
 			}
 
 		}

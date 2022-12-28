@@ -28,24 +28,13 @@ func NewDocumentController(DB *sql.DB) *DocumentController {
 // GetDocuments метод контроллера по получения всех значений из БД
 func (dc *DocumentController) GetDocuments(res http.ResponseWriter, req *http.Request) {
 	//установливаем заголовок «Content-Type: application/json», т.к. потому что мы отправляем данные JSON с запросом через роутер
-	res.Header().Set(
-		"Content-Type",
-		"application/json",
-	)
+	res.Header().Set("Content-Type", "application/json")
 	//обращение к методу модели Getusers
-	fmt.Println("Pfgecnbkcz")
 	documents, err := dc.model.GetDocuments()
 	if err != nil {
 		m := "Ошибка выполнеия функции получения информации о всех пользователях: %s"
-		fmt.Println(
-			m,
-			err,
-		)
-		fmt.Fprintf(
-			res,
-			m,
-			err,
-		)
+		fmt.Println(m, err)
+		fmt.Fprintf(res, m, err)
 		return
 	}
 	//кодирование в json результата выполнения метода и передача в пакет main
@@ -53,23 +42,13 @@ func (dc *DocumentController) GetDocuments(res http.ResponseWriter, req *http.Re
 }
 func (dc *DocumentController) GetDocumentsFull(res http.ResponseWriter, req *http.Request) {
 	//установливаем заголовок «Content-Type: application/json», т.к. потому что мы отправляем данные JSON с запросом через роутер
-	res.Header().Set(
-		"Content-Type",
-		"application/json",
-	)
+	res.Header().Set("Content-Type", "application/json")
 	//обращение к методу модели Getusers
 	documents, err := dc.model.GetDocumentsFull()
 	if err != nil {
 		m := "Ошибка выполнеия функции получения информации о всех пользователях: %s"
-		fmt.Println(
-			m,
-			err,
-		)
-		fmt.Fprintf(
-			res,
-			m,
-			err,
-		)
+		fmt.Println(m, err)
+		fmt.Fprintf(res, m, err)
 		return
 	}
 
