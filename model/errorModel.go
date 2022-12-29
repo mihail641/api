@@ -2,14 +2,9 @@ package model
 
 import (
 	"database/sql"
+	"example.com/projectApiClient"
 	"fmt"
 )
-
-// User структура используется инициализации данные в структуры
-type Error struct {
-	Id    int64  `json:"id"`
-	Title string `json:"title"`
-}
 
 // UserModel используется для конструктора модели
 type ErrorModel struct {
@@ -24,7 +19,7 @@ func NewErrorModel(DB *sql.DB) *ErrorModel {
 }
 
 // GetErrorById метод модели по получению всех пользователей из БД возвращает массив структур Error и ошибку
-func (m *ErrorModel) GetErrorById(moduleId int64) ([]Error, error) {
+func (m *ErrorModel) GetErrorById(moduleId int64) ([]projectApiClient.Error, error) {
 	//Query запрос возврата срок выборки из таблицы значений значений по id
 	var rows, err = m.dataBase.Query(
 		"SELECT id, title FROM documentations.error where fk_module=$1",
@@ -38,10 +33,10 @@ func (m *ErrorModel) GetErrorById(moduleId int64) ([]Error, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	error := []Error{}
+	error := []projectApiClient.Error{}
 	//получение данных из всей таблицы
 	for rows.Next() {
-		p := Error{}
+		p := projectApiClient.Error{}
 		err := rows.Scan(
 			&p.Id,
 			&p.Title,

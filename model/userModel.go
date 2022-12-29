@@ -3,15 +3,9 @@ package model
 
 import (
 	"database/sql"
+	"example.com/projectApiClient"
 	"fmt"
 )
-
-// User структура используется инициализации данные в структуры
-type User struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Sale int    `json:"sale"`
-}
 
 // UserModel используется для конструктора модели
 type UserModel struct {
@@ -27,7 +21,7 @@ func NewUserModel(DB *sql.DB) *UserModel {
 
 // Getusers метод модели по получению всех пользователей из БД возвращает массив
 //структур User и ошибку
-func (m *UserModel) Getusers() ([]User, error) {
+func (m *UserModel) Getusers() ([]projectApiClient.User, error) {
 	//rows запрос возврата сроки выборки из таблицы значений
 	var rows, err = m.dataBase.Query("SELECT id, name, sale FROM Misha2")
 	if err != nil {
@@ -39,10 +33,10 @@ func (m *UserModel) Getusers() ([]User, error) {
 	}
 	defer rows.Close()
 	//users инициализация массива структур User
-	users := []User{}
+	users := []projectApiClient.User{}
 	//получение данных из всей таблицы
 	for rows.Next() {
-		p := User{}
+		p := projectApiClient.User{}
 		err := rows.Scan(
 			&p.ID,
 			&p.Name,
@@ -66,8 +60,8 @@ func (m *UserModel) Getusers() ([]User, error) {
 }
 
 // GetSingleUser метод модели по получению всех пользователей из БД по id, возвращает структуру User и ошибку
-func (m *UserModel) GetSingleUser(id int) (User, error) {
-	var p User
+func (m *UserModel) GetSingleUser(id int) (projectApiClient.User, error) {
+	var p projectApiClient.User
 	//QueryRow запрос возврата сроки выборки из таблицы значений значений по id
 	row1 := m.dataBase.QueryRow(
 		"SELECT id, name, sale FROM Misha2 where id=$1",
@@ -91,9 +85,9 @@ func (m *UserModel) GetSingleUser(id int) (User, error) {
 }
 
 // CreateUser метод модели по созданию нового пользователя используя уникальный id возвращает структу User и ошибку
-func (m *UserModel) CreateUser(name string, sale int) (User, error) {
+func (m *UserModel) CreateUser(name string, sale int) (projectApiClient.User, error) {
 	//user инициализация данных переданных из контроллера в структуру User
-	var user = User{Name: name, Sale: sale}
+	var user = projectApiClient.User{Name: name, Sale: sale}
 	//создание нового значения используя данные переданных из контроллера с уникальным id
 	err := m.dataBase.QueryRow(
 		"INSERT INTO Misha2 (name, sale) VALUES($1,$2) returning id",
@@ -111,9 +105,9 @@ func (m *UserModel) CreateUser(name string, sale int) (User, error) {
 }
 
 // UpdateUser метод модели по изменению конкретного пользователя из БД, возвращает структуру User и ошибку
-func (m *UserModel) UpdateUser(id int, name string, sale int) (User, error) {
+func (m *UserModel) UpdateUser(id int, name string, sale int) (projectApiClient.User, error) {
 	//инициализация данных переданных из контроллера в структуру User
-	user := User{ID: id, Name: name, Sale: sale}
+	user := projectApiClient.User{ID: id, Name: name, Sale: sale}
 	fmt.Println(
 		"Печать из модели",
 		id,
@@ -150,7 +144,7 @@ func (m *UserModel) UpdateUser(id int, name string, sale int) (User, error) {
 }
 
 // DeleteUser метод модели по удалению конкретного пользователя из БД по id, возвращает структуру User и ошибку
-func (m *UserModel) DeleteUser(id int) (User, error) {
+func (m *UserModel) DeleteUser(id int) (projectApiClient.User, error) {
 	var s *string
 	//row1 нахождение строки с id переданного из контроллера
 	row1 := m.dataBase.QueryRow(
@@ -163,7 +157,7 @@ func (m *UserModel) DeleteUser(id int) (User, error) {
 			"Нет такого id=%d",
 			id,
 		)
-		return User{}, err
+		return projectApiClient.User{}, err
 	} else {
 		var k string
 		//удаление строки в случае нахождения данной строки
@@ -177,8 +171,8 @@ func (m *UserModel) DeleteUser(id int) (User, error) {
 				"Ошибка удаления строки из БД %s",
 				err,
 			)
-			return User{}, err
+			return projectApiClient.User{}, err
 		}
 	}
-	return User{}, err
+	return projectApiClient.User{}, err
 }
